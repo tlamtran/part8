@@ -1,11 +1,33 @@
-import { ALL_AUTHORS } from "../queries"
-import { useQuery } from "@apollo/client"
+import { ALL_AUTHORS, EDIT_AUTHOR } from "../queries"
+import { useQuery, useMutation } from "@apollo/client"
+import { useState } from "react"
 
 const Authors = (props) => {
+  const [name, setName] = useState('')
+  const [born, setBorn] = useState('')
+
   if (!props.show) {
     return null
   }
-  const authors = useQuery(ALL_AUTHORS) // eslint-disable-line 
+
+  const authors = useQuery(ALL_AUTHORS)  // eslint-disable-line 
+  const [editBorn] = useMutation(EDIT_AUTHOR, { // eslint-disable-line 
+    refetchQueries: [{query: ALL_AUTHORS}]
+  }) 
+  
+  const setBirthyear = async (event) => {
+    event.preventDefault()
+
+    editBorn({
+      variables: {
+        name: name,
+        born: Number(born)
+      }
+    })
+    
+    setName('')
+    setBorn('')
+  }
 
   if (authors.loading) {
     return <div>loading...</div>
@@ -30,6 +52,25 @@ const Authors = (props) => {
           ))}
         </tbody>
       </table>
+      <h2>Set birthyear</h2>
+      <form onSubmit={setBirthyear}>
+        <div>
+          name
+          <input
+            value={name}
+            onChange={e => setName(e.target.value)}
+          />
+        </div>
+        <div>
+          born
+          <input
+            type="number"
+            value={born}
+            onChange={e => setBorn(e.target.value)}
+          />
+        </div>
+        <button type="submit">update author</button>
+      </form>
     </div>
   )
 }
