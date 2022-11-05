@@ -17,7 +17,8 @@ const Authors = (props) => {
   
   const setBirthyear = async (event) => {
     event.preventDefault()
-
+    console.log(name)
+    console.log(born)
     editBorn({
       variables: {
         name: name,
@@ -54,13 +55,16 @@ const Authors = (props) => {
       </table>
       <h2>Set birthyear</h2>
       <form onSubmit={setBirthyear}>
-        <div>
-          name
-          <input
-            value={name}
-            onChange={e => setName(e.target.value)}
-          />
-        </div>
+        name
+        <select value={name} onChange={e => setName(e.target.value)}>
+          <option></option>
+          {authors.data.allAuthors.map(a => 
+            <option
+              key={a.name}
+              value={a.name}>
+              {a.name}
+            </option>)}
+        </select>
         <div>
           born
           <input
