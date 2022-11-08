@@ -17,19 +17,19 @@ mongoose.connect(MONGODB_URI)
 
 
 const typeDefs = gql`
+  type Author {
+    name: String!
+    bookCount: Int!
+    id: ID!
+    born: Int
+  }
+
   type Book {
     title: String!
     published: Int!
     author: Author!
     id: ID!
     genres: [String!]!
-  }
-
-  type Author {
-    name: String!
-    bookCount: Int!
-    id: ID!
-    born: Int
   }
 
   type Mutation {
@@ -55,15 +55,17 @@ const resolvers = {
     bookCount: async () => Book.collection.countDocuments(),
     authorCount: async () => Author.collection.countDocuments(),
     allBooks: async (root, args) => {
-      const books = await Book.find({})
       if (!args.author && !args.genre) {
+        const books = await Book.find({})
         return books
       }
       else if (args.author) {
+        const books = await Book.find({})
         return books.filter(b => b.author.name === args.name)
       }
       else {
-        return books.filter(b => b.genres.includes(args.genre))
+        const books = await Book.find({ genres: { $in: [args.genre]}})
+        return books
       }
     }, 
     allAuthors: async () => {
@@ -117,14 +119,16 @@ const resolvers = {
     },
     editAuthor: async (root, args) => {
       const author = await Author.findOne({ name: args.name })
-      author.born = args.setBornTo
       
-      try {
-        await author.save()
-      } catch (error) {
-        throw new UserInputError(error.messag, {
-          invalidArgs: args
-        })
+      if (author) {
+        try {
+          author.born = args.setBornTo
+          await author.save()
+        } catch (error) {
+          throw new UserInputError(error.messag, {
+            invalidArgs: args
+          })
+        }
       }
       
       return author
