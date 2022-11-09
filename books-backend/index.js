@@ -94,20 +94,7 @@ const resolvers = {
       }
     }, 
     allAuthors: async () => {
-      const map = new Map()
-      const books = await Book.find({})
-      const authors = await Author.find({})
-
-      books.forEach(b => {
-        if (map.has(b.author)) {
-          map.set(b.author, map.get(b.author) + 1)
-        }
-        else {
-          map.set(b.author, 1)
-        }
-      })
-      authors.forEach(a => a.bookCount = map.get(a.name))
-      return authors
+      return Author.find({})
     },
     me: (root, args, context) => {
       return context.currentUser
@@ -122,6 +109,7 @@ const resolvers = {
             const newAuthor = new Author({
               name: args.author,
               born: null,
+              bookCount: 1
             })
             const response = await newAuthor.save()
             const book = new Book({ ...args, author: response._id })
@@ -135,6 +123,8 @@ const resolvers = {
         }
         else {
           try {
+            author.bookCount += 1
+            await author.save()
             const book = new Book({ ...args, author: author._id })
             await book.save()
             return book
