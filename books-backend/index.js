@@ -89,7 +89,9 @@ const resolvers = {
         return books.filter(b => b.author.name === args.name)
       }
       else {
-        const books = await Book.find({ genres: { $in: [args.genre]}})
+        const books = await Book
+          .find({ genres: { $in: [args.genre] } })
+          .populate('author')
         return books
       }
     }, 
