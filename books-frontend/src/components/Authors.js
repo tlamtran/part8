@@ -5,9 +5,9 @@ import { useState } from "react"
 const Authors = (props) => {
   const [name, setName] = useState('')
   const [born, setBorn] = useState('')
-  
-  const authors = useQuery(ALL_AUTHORS)  // eslint-disable-line 
-  const [editBorn] = useMutation(EDIT_AUTHOR, { // eslint-disable-line 
+
+  const authors = useQuery(ALL_AUTHORS) 
+  const [editBorn] = useMutation(EDIT_AUTHOR, { 
     refetchQueries: [{query: ALL_AUTHORS}]
   }) 
 
