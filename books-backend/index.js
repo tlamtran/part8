@@ -81,6 +81,7 @@ const resolvers = {
       if (!args.author && !args.genre) {
         const books = await Book
           .find({})
+          .populate('author')
         return books
       }
       else if (args.author) {
