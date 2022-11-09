@@ -5,20 +5,20 @@ import { useState } from "react"
 const Authors = (props) => {
   const [name, setName] = useState('')
   const [born, setBorn] = useState('')
-
-  if (!props.show) {
-    return null
-  }
-
+  
   const authors = useQuery(ALL_AUTHORS)  // eslint-disable-line 
   const [editBorn] = useMutation(EDIT_AUTHOR, { // eslint-disable-line 
     refetchQueries: [{query: ALL_AUTHORS}]
   }) 
+
+
+  if (!props.show) {
+    return null
+  }
   
   const setBirthyear = async (event) => {
     event.preventDefault()
-    console.log(name)
-    console.log(born)
+
     editBorn({
       variables: {
         name: name,
