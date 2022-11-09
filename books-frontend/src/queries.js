@@ -18,10 +18,19 @@ export const ALL_AUTHORS = gql`
   }
 `
 
+export const ME = gql`
+  query {
+    me {
+      username
+      favouriteGenre
+    }
+  }
+`
+
 
 export const ALL_BOOKS = gql`
-  query {
-    allBooks {
+  query($genre: String) {
+    allBooks(genre: $genre) {
       title
       author {
         name
@@ -29,9 +38,19 @@ export const ALL_BOOKS = gql`
         bookCount
       }
       published
+      genres
     }
   }
 `
+
+export const ALL_GENRES = gql`
+  query {
+    allBooks {
+      genres
+    }
+  }
+`
+
 export const ADD_BOOK = gql`
   mutation addBook(
     $title: String!,
@@ -46,7 +65,6 @@ export const ADD_BOOK = gql`
         genres: $genres
       ) {
         title
-        author
         published
         genres
       }
